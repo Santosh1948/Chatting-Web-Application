@@ -7,6 +7,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 public class Server extends JFrame implements ActionListener {
+    JTextField text;
+    JPanel a1;
     Server(){
         setLayout(null);
 
@@ -70,12 +72,12 @@ public class Server extends JFrame implements ActionListener {
         status.setFont(new Font("SAN_SERIF", Font.BOLD,14));
         p1.add(status);
 
-        JPanel a1 = new JPanel();
+        a1 = new JPanel();
         a1.setBounds(5,75,440,570);
         setUndecorated(true);
         add(a1);
 
-        JTextField text = new JTextField();
+        text = new JTextField();
         text.setBounds(5,655,310,40);
         text.setFont(new Font("Railway", Font.PLAIN,16));
         add(text);
@@ -98,6 +100,8 @@ public class Server extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
+        String out = text.getText();
+        a1.setLayout(new BorderLayout());
+        JPanel right = new JPanel(new BorderLayout());
     }
 }
