@@ -1,14 +1,17 @@
 package chatting.application;
-import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import javax.swing.*;
 
 public class Server extends JFrame implements ActionListener {
     JTextField text;
     JPanel a1;
+    Box vertical = Box.createVerticalBox();
     Server(){
         setLayout(null);
 
@@ -73,9 +76,13 @@ public class Server extends JFrame implements ActionListener {
         p1.add(status);
 
         a1 = new JPanel();
-        a1.setBounds(5,75,440,570);
+        a1.setLayout(new BorderLayout());
         setUndecorated(true);
-        add(a1);
+        JScrollPane sp = new JScrollPane(a1);
+        sp.setBounds(5,75,440,570);
+        sp.setBorder(null);
+        add(sp);
+
 
         text = new JTextField();
         text.setBounds(5,655,310,40);
@@ -87,21 +94,62 @@ public class Server extends JFrame implements ActionListener {
         send.setBackground(new Color(7,94,84));
         send.setForeground(Color.WHITE);
         send.setFont(new Font("Railway", Font.PLAIN,16));
+        send.addActionListener(this);
         add(send);
+
 
         setSize(450,700);
         setLocation(200,50);
         getContentPane().setBackground(Color.WHITE);
         setVisible(true);
     }
+
     public static void main(String[] args) {
+
         new Server();
     }
-
     @Override
     public void actionPerformed(ActionEvent e) {
+
         String out = text.getText();
-        a1.setLayout(new BorderLayout());
+        if(out.equals("")) return;
+
+        JPanel p2 = formatLabel(out);
+
         JPanel right = new JPanel(new BorderLayout());
+        right.add(p2, BorderLayout.LINE_END);
+
+        vertical.add(right);
+        vertical.add(Box.createVerticalStrut(15));
+
+        a1.setLayout(new BorderLayout());
+        a1.add(vertical, BorderLayout.PAGE_START);
+
+        text.setText("");
+        validate();
     }
+
+    public static JPanel formatLabel(String out){
+        JPanel panel = new JPanel();
+        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
+
+        JLabel output = new JLabel("<html><p style='width:150px'>" + out + "</p></html>");
+        output.setFont(new Font("Railway", Font.PLAIN, 16));
+        output.setBackground(new Color(37, 211, 102));
+        output.setOpaque(true);
+        output.setBorder(BorderFactory.createEmptyBorder(15,15,15,50));
+
+        panel.add(output);
+
+        Calendar cal = Calendar.getInstance();
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+
+        JLabel time = new JLabel();
+        time.setText(sdf.format(cal.getTime()));
+
+        panel.add(time);
+
+        return panel;
+    }
+
 }
