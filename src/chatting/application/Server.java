@@ -4,22 +4,27 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.DataInputStream;
+import java.io.DataOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import javax.swing.*;
+import java.net.*;
 
-public class Server extends JFrame implements ActionListener {
+public class Server implements ActionListener {
     JTextField text;
     JPanel a1;
-    Box vertical = Box.createVerticalBox();
+    static Box vertical = Box.createVerticalBox();
+    static JFrame f = new JFrame();
+    static DataOutputStream dout;
     Server(){
-        setLayout(null);
+        f.setLayout(null);
 
         JPanel p1 = new JPanel();
         p1.setBackground(new Color(7,94,84));
         p1.setBounds(0,0, 450,70);
         p1.setLayout(null);
-        add(p1);
+        f.add(p1);
 
         ImageIcon i1 = new ImageIcon(ClassLoader.getSystemResource("icons/3.png"));
         Image i2 = i1.getImage().getScaledInstance(25,25,Image.SCALE_DEFAULT);
@@ -77,17 +82,17 @@ public class Server extends JFrame implements ActionListener {
 
         a1 = new JPanel();
         a1.setLayout(new BorderLayout());
-        setUndecorated(true);
+        f.setUndecorated(true);
         JScrollPane sp = new JScrollPane(a1);
         sp.setBounds(5,75,440,570);
         sp.setBorder(null);
-        add(sp);
+        f.add(sp);
 
 
         text = new JTextField();
         text.setBounds(5,655,310,40);
         text.setFont(new Font("Railway", Font.PLAIN,16));
-        add(text);
+        f.add(text);
 
         JButton send = new JButton("Send");
         send.setBounds(320,655,123,40);
@@ -95,38 +100,66 @@ public class Server extends JFrame implements ActionListener {
         send.setForeground(Color.WHITE);
         send.setFont(new Font("Railway", Font.PLAIN,16));
         send.addActionListener(this);
-        add(send);
+        f.add(send);
 
 
-        setSize(450,700);
-        setLocation(200,50);
-        getContentPane().setBackground(Color.WHITE);
-        setVisible(true);
+        f.setSize(450,700);
+        f.setLocation(200,50);
+        f.getContentPane().setBackground(Color.WHITE);
+        f.setVisible(true);
     }
 
     public static void main(String[] args) {
 
         new Server();
+
+        try{
+            ServerSocket skt = new ServerSocket(9999);
+            while (true){
+                Socket s = skt.accept();
+                DataInputStream din = new DataInputStream(s.getInputStream());
+                dout = new DataOutputStream(s.getOutputStream());
+
+                while (true){
+                    String msg = din.readUTF();
+                    JPanel panel = formatLabel(msg);
+
+                    JPanel left = new JPanel(new BorderLayout());
+                    left.add(panel,BorderLayout.LINE_START);
+                    vertical.add(left);
+                    f.validate();
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
     @Override
     public void actionPerformed(ActionEvent e) {
+        try {
+            String out = text.getText();
+            if (out.equals("")) return;
 
-        String out = text.getText();
-        if(out.equals("")) return;
+            JPanel p2 = formatLabel(out);
 
-        JPanel p2 = formatLabel(out);
+            JPanel right = new JPanel(new BorderLayout());
+            right.add(p2, BorderLayout.LINE_END);
 
-        JPanel right = new JPanel(new BorderLayout());
-        right.add(p2, BorderLayout.LINE_END);
+            vertical.add(right);
+            vertical.add(Box.createVerticalStrut(15));
 
-        vertical.add(right);
-        vertical.add(Box.createVerticalStrut(15));
+            a1.setLayout(new BorderLayout());
+            a1.add(vertical, BorderLayout.PAGE_START);
 
-        a1.setLayout(new BorderLayout());
-        a1.add(vertical, BorderLayout.PAGE_START);
+            dout.writeUTF(out);
 
-        text.setText("");
-        validate();
+            text.setText("");
+            f.invalidate();
+            f.repaint();
+            f.validate();
+        } catch (Exception ex) {
+            throw new RuntimeException(ex);
+        }
     }
 
     public static JPanel formatLabel(String out){
@@ -135,7 +168,7 @@ public class Server extends JFrame implements ActionListener {
 
         JLabel output = new JLabel("<html><p style='width:150px'>" + out + "</p></html>");
         output.setFont(new Font("Railway", Font.PLAIN, 16));
-        output.setBackground(new Color(37, 211, 102));
+        output.setBackground(new Color(37, 211, 46));
         output.setOpaque(true);
         output.setBorder(BorderFactory.createEmptyBorder(15,15,15,50));
 
