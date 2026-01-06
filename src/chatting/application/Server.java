@@ -48,7 +48,7 @@ public class Server implements ActionListener {
         p1.add(profile);
 
         ImageIcon i7 = new ImageIcon(ClassLoader.getSystemResource("icons/video.png"));
-        Image i8 = i7.getImage().getScaledInstance(25,25,Image.SCALE_DEFAULT);
+        Image i8 = i7.getImage().getScaledInstance(30,30,Image.SCALE_DEFAULT);
         ImageIcon i9 = new ImageIcon(i8);
         JLabel video = new JLabel(i9);
         video.setBounds(300,20,30,30);

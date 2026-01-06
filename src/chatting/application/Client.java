@@ -18,8 +18,6 @@ public class Client implements ActionListener {
     static JFrame f;   // declared
 
     Client() {
-
-        // 🔧 FIX 1: JFrame initialize (NPE fix)
         f = new JFrame();
         f.setLayout(null);
 
@@ -103,12 +101,8 @@ public class Client implements ActionListener {
         f.setLocation(800,50);
         f.getContentPane().setBackground(Color.WHITE);
         f.setVisible(true);
-
-        // 🔧 FIX 2: socket listening in separate thread
         connect();
     }
-
-    // ================= SOCKET THREAD =================
     private void connect() {
         try {
             Socket s = new Socket("127.0.0.1",9999);
@@ -119,8 +113,6 @@ public class Client implements ActionListener {
                 try {
                     while (true) {
                         String msg = din.readUTF();
-
-                        // 🔧 FIX 3: Swing update on EDT
                         SwingUtilities.invokeLater(() -> {
                             JPanel panel = formatLabel(msg);
                             JPanel left = new JPanel(new BorderLayout());
@@ -132,16 +124,14 @@ public class Client implements ActionListener {
                         });
                     }
                 } catch (Exception e) {
-                    e.printStackTrace();
+                    System.out.println(e);
                 }
             }).start();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            System.out.print(e);
         }
     }
-
-    // ================= SEND BUTTON =================
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
@@ -164,8 +154,6 @@ public class Client implements ActionListener {
             ex.printStackTrace();
         }
     }
-
-    // ================= MESSAGE UI =================
     public static JPanel formatLabel(String out){
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
