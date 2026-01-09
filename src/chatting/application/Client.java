@@ -15,7 +15,7 @@ public class Client implements ActionListener {
     static JPanel a1;
     static Box vertical = Box.createVerticalBox();
     static DataOutputStream dout;
-    static JFrame f;   // declared
+    static JFrame f;   
 
     Client() {
         f = new JFrame();
@@ -146,7 +146,7 @@ public class Client implements ActionListener {
             vertical.add(Box.createVerticalStrut(15));
             a1.add(vertical, BorderLayout.PAGE_START);
 
-            dout.writeUTF(out);   // 🔧 FIX 4: message actually sent
+            dout.writeUTF(out);   
             text.setText("");
             f.validate();
 
