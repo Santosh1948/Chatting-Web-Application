@@ -132,7 +132,7 @@ public class Client implements ActionListener {
             System.out.print(e);
         }
     }
-    // Action performed method
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         try {
